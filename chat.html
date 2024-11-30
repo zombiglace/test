@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nsi Groupe chat</title>
+    <title>Document</title>
   </head>
   <body>
     <style>
@@ -57,6 +57,7 @@
       .message {
         padding: 10px;
         border-bottom: 1px solid #ccc;
+        white-space: pre-wrap;
       }
 
       .username {
@@ -66,6 +67,7 @@
 
       .message-text {
         padding-left: 10px;
+        white-space: pre-wrap;
       }
 
       .chat-input {
@@ -158,7 +160,9 @@
           transform: translateY(-0.1em);
         }
       }
-
+      .time {
+        color: white;
+      }
       #username {
         /* Apparence générale */
         width: 85%;
@@ -217,54 +221,689 @@
       }
     </style>
 
-    <div class="container">
-      <div class="card">
-        <div class="chat-header">Chat</div>
-        <div class="chat-window">
-          <ul class="message-list" id="messages"></ul>
+    <style>
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .navbar {
+        margin: 20px 0;
+      }
+
+      .navbar button {
+        margin: 0 5px;
+      }
+
+      .building {
+        margin: 10px 0;
+      }
+
+      /* Styles pour le chat */
+      #chat {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+
+      #toggleChatButton {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+      }
+
+      /* Cacher le jeu par défaut */
+      #game {
+        display: none;
+      }
+
+      .game {
+        justify-content: center;
+        align-items: center;
+        color: #ccc;
+        text-align: center;
+        display: flex;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0; /* Ajout du point-virgule ici */
+    width: 250px;
+    height: 100vh;
+    background-color: #f0f0f0;
+    border-left: 1px solid #ccc;
+    padding: 20px;
+    overflow-y: auto; /* Ajout pour faire défiler si nécessaire */
+}
+.building {
+    margin-bottom: 10px;
+}
+
+.building button {
+    width: 100%;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.building button:hover {
+    background-color: #f5f5f5;
+
+
+}
+
+        /* Style spécifique pour le bouton avec l'ID "clickButton" */
+        #clickButton {
+            background-color: #34495e;
+            color: #ecf0f1;
+            border: 2px solid #1abc9c;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #clickButton:hover {
+            background-color: #1abc9c;
+        }
+
+        #clickButton:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+        }
+
+        #clickButton:hover:after {
+            width: 0;
+            height: 0;
+            top: 50%;
+            left: 50%;
+        }
+
+        #clickButton span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        
+
+        .puls {
+            position: relative;
+            display: inline-block; /* Pour que le pseudo-élément s'ajuste au bouton */
+        }
+
+        #clickButton {
+            background-color: #2a2a2a; /* Couleur de fond du bouton */
+            color: #00ffcc; /* Couleur du texte */
+            border: 2px solid #00ffcc; /* Bordure verte */
+            padding: 15px 30px; /* Espacement interne */
+            font-size: 16px; /* Taille de la police */
+            border-radius: 8px; /* Coins arrondis */
+            cursor: pointer; /* Curseur en forme de main */
+            font-family: 'Courier New', Courier, monospace; /* Police de style informatique */
+            position: relative;
+            z-index: 1; /* Mettre le bouton au-dessus de l'animation */
+            transition: background-color 0.3s ease; /* Transition pour les effets */
+        }
+
+        #clickButton:hover {
+            background-color: #1a1a1a; /* Changer la couleur de fond au survol */
+        }
+
+    </style>
+
+    <div>
+      <div id="game" class="game">
+        <div id="leaderboard">
+          <h2>Leaderboard</h2>
+          <ul id="leaderboardList"></ul>
         </div>
-        <div class="chat-input">
-          <form action="">
-            <input
-              type="text"
-              id="username"
-              placeholder="Username"
-              autocomplete="off"
-            />
-            <textarea
-              id="msg"
-              placeholder="Message"
-              autocomplete="off"
-              rows="1"
-            ></textarea>
-            <button class="send-button">
-              <div class="svg-wrapper-1">
-                <div class="svg-wrapper">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="70"
-                    height="25"
-                  >
-                    <path fill="none" d="M0 0h24v24H0z"></path>
-                    <path
-                      fill="currentColor"
-                      d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
-              <span>Send</span>
-            </button>
-          </form>
+
+        <script>
+          let users = {}; // Objet pour stocker les utilisateurs et leur argent
+
+          // Lorsque le message est envoyé
+          socket.on("chat message", function (data) {
+            // Mettre à jour l'argent de l'utilisateur
+            if (!users[data.username]) {
+              users[data.username] = { money: 0 }; // Initialiser si l'utilisateur n'existe pas
+            }
+
+            // Créer un message et l'ajouter au chat
+            var message = $("<li class='message'>");
+            message.append($("<span class='time'>").text(`${data.time}`));
+            message.append($("<br>"));
+            message.append(
+              $("<span class='username'>").html(`<i>${data.username}:</i>`)
+            );
+            message.append($("<span class='message-text'>").html(data.message));
+            $("#messages").append(message);
+
+            // Mettre à jour le leaderboard
+            updateLeaderboard();
+          });
+
+          // Fonction pour mettre à jour le leaderboard
+          function updateLeaderboard() {
+            const leaderboardArray = Object.keys(users).map((username) => {
+              return { username: username, money: users[username].money };
+            });
+
+            // Trier par argent décroissant
+            leaderboardArray.sort((a, b) => b.money - a.money);
+
+            // Mettre à jour l'affichage du leaderboard
+            const leaderboardList = $("#leaderboardList");
+            leaderboardList.empty(); // Vider la liste actuelle
+            leaderboardArray.forEach((user) => {
+              leaderboardList.append(
+                $("<li>").text(`${user.username}: ${user.money}`)
+              );
+            });
+          }
+
+          const dropdownBtn = document.querySelector('.dropdown-btn');
+const dropdownContainer = document.querySelector('.dropdown-container');
+
+dropdownBtn.addEventListener('click', () => {
+  dropdownContainer.classList.toggle('show');
+});
+
+          // Exemple d'appel pour mettre à jour l'argent (par exemple, lorsque l'utilisateur clique sur un bouton)
+          $("#clickButton").click(function () {
+            const username = $("#username").val();
+            if (users[username]) {
+              users[username].money += 1; // Augmenter l'argent de l'utilisateur
+              updateLeaderboard(); // Mettre à jour le leaderboard
+            }
+          });
+        </script>
+        <br />
+        <h1>Jeu Clicker</h1>
+        <div id="moneyDisplay">Argent: 0</div>
+        <div class="puls">
+          <button id="clickButton">click here </button>
+        </div>
+        <!-- <div class="shop">--->
+    <style>
+        /* style.css */
+        .message-text {
+            color: #fff;
+        }
+        .containerv3 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            width: 500px;
+            background-color: #2e2c2c;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .chat-header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            font-size: 18px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .chat-window {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .message-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .message {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            white-space: pre-wrap;
+        }
+        .username {
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .message-text {
+            padding-left: 10px;
+            white-space: pre-wrap;
+        }
+        .chat-input {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+        .message-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .username-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 150px;
+            background-color: #f7f7f7;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .username-input:focus {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        button {
+            font-family: inherit;
+            font-size: 15px;
+            background: royalblue;
+            color: white;
+            padding: 0.7em 1em;
+            padding-left: 0.9em;
+            align-items: center;
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
+            justify-content: center;
+        }
+        .sidebarv2 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #f0f0f0;
+            border-right: 1px solid #ccc;
+            padding: 20px;
+            display: none; /* Cacher par défaut */
+        }
+        .sidebarv2 h2 {
+            margin-top: 0;
+        }
+        .shop-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            background-color: #2c2c2c;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .boost-option {
+            margin: 10px 0;
+        }
+
+        .close-shop {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #333;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.close-shop:hover {
+    background-color: #ccc;
+}
+    </style>
+<body>
+  <div class="shop-icon" id="shopIcon">🛒</div>
+  <div class="sidebarv2" id="sidebarv2" style="display: none;">
+      <button class="close-shop" id="closeShopButton">✖</button>
+      <h2>Boosts</h2>
+      <div class="boost-option">
+          <button id="boost1Button">Acheter Boost 1 (Coût: 100)</button>
+      </div>
+      <div class="boost-option">
+          <button id="boost2Button">Acheter Boost 2 (Coût: 500)</button>
+      </div>
+      <div class="boost-option">
+          <button id="boost3Button">Acheter Boost 3 (Coût: 1000)</button>
+      </div>
+
+      <div class="sidebar">
+  <div class="sidebar">
+    <h2>Bâtiments</h2>
+    <!-- Liste des bâtiments -->
+    <div class="building" id="building1">
+      <span class="emoji">🖥️</span>
+      <button id="building1Button">Acheter pc (Coût: 10, Boost: +1)</button>
+  </div>
+  <div class="building" id="building2">
+      <span class="emoji">💾</span>
+      <button id="building2Button">Acheter savegarde (Coût: 40, Boost: +2)</button>
+  </div>
+  <div class="building" id="building3">
+      <span class="emoji">🛠️</span>
+      <button id="building3Button">Acheter tools (Coût: 160, Boost: +4)</button>
+  </div>
+  <div class="building" id="building4">
+      <span class="emoji">🎮</span>
+      <button id="building4Button">Acheter console (Coût: 640, Boost: +8)</button>
+  </div>
+  <div class="building" id="building5">
+      <span class="emoji">🔌</span>
+      <button id="building5Button">Acheter alimentation (Coût: 2560, Boost: +16)</button>
+  </div>
+  <div class="building" id="building6">
+      <span class="emoji">📀</span>
+      <button id="building6Button">Acheter mp3 (Coût: 10240, Boost: +32)</button>
+  </div>
+  <div class="building" id="building7">
+      <span class="emoji">📡</span>
+      <button id="building7Button">Acheter internet (Coût: 40960, Boost: +64)</button>
+  </div>
+  <div class="building" id="building8">
+      <span class="emoji">🧔‍♀️</span>
+      <button id="building8Button">Acheter la daronne a ronan (Coût: 163840, Boost: +128)</button>
+  </div>
+  <div class="building" id="building9">
+      <span class="emoji">💡</span>
+      <button id="building9Button">Acheter l inteligence a stephane (Coût: 655360, Boost: +256)</button>
+  </div>
+  <div class="building" id="building10">
+      <span class="emoji">🔋</span>
+      <button id="building10Button">Acheter baterie (Coût: 2621440, Boost: +512)</button>
+  </div>
+  <div class="building" id="building11">
+      <span class="emoji">🖱️</span>
+      <button id="building11Button">Acheter souris (Coût: 10485760, Boost: +1024)</button>
+  </div>
+  <div class="building" id="building12">
+      <span class="emoji">⌨️</span>
+      <button id="building12Button">Acheter clavier (Coût: 41943040, Boost: +2048)</button>
+  </div>
+  <div class="building" id="building13">
+      <span class="emoji">📱</span>
+      <button id="building13Button">Acheter telephone (Coût: 167772160, Boost: +4096)</button>
+  </div>
+  <div class="building" id="building14">
+      <span class="emoji">📺</span>
+      <button id="building14Button">Acheter TV (Coût: 671088640, Boost: +8192)</button>
+  </div>
+  <div class="building" id="building15">
+      <span class="emoji">🖨️</span>
+      <button id="building15Button">Acheter imprimente (Coût: 2684354560, Boost: +16384)</button>
+  </div>
+  <div class="building" id="building16">
+      <span class="emoji">🎧</span>
+      <button id="building16Button">Acheter casque (Coût: 10737418240, Boost: +32768)</button>
+  </div>
+  <div class="building" id="building17">
+      <span class="emoji">🎤</span>
+      <button id="building17Button">Acheter micro (Coût: 42949672960, Boost: +65536)</button>
+  </div>
+  <div class="building" id="building18">
+      <span class="emoji">🖊️</span>
+      <button id="building18Button">Acheter stylo connecter (Coût: 171798691840, Boost: +131072)</button>
+  </div>
+  <div class="building" id="building19">
+      <span class="emoji">💻</span>
+      <button id="building19Button">Acheter ordi portable (Coût: 687194767360, Boost: +262144)</button>
+  </div>
+  <div class="building" id="building20">
+      <span class="emoji">🔭</span>
+      <button id="building20Button">Acheter telescope pour observer la daronne a ronan (Coût: 2748779069440, Boost: +524288)</button>
+  </div>
+  
+</div>
+  </div>
+  </div>
+  
+  <script>
+      const shopIcon = document.getElementById('shopIcon');
+      const shopSidebar = document.getElementById('sidebarv2'); // Correction ici
+  
+      shopIcon.addEventListener('click', () => {
+          shopSidebar.style.display = shopSidebar.style.display === 'none' ? 'block' : 'none';
+      });
+
+      const closeShopButton = document.getElementById('closeShopButton');
+
+closeShopButton.addEventListener('click', () => {
+    shopSidebar.style.display = 'none'; // Ferme la barre latérale
+});
+      
+
+      const boosts = [100, 500, 1000]; // Coûts des boosts
+  
+      document.getElementById('boost1Button').addEventListener('click', () => {
+          if (money >= boosts[0]) {
+              money -= boosts[0];
+              clickValue += 2; // Augmenter la valeur de clic
+              updateDisplay();
+          } else {
+              alert("Pas assez d'argent !");
+          }
+      });
+  
+      document.getElementById('boost2Button').addEventListener('click', () => {
+          if (money >= boosts[1]) {
+              money -= boosts[1];
+              clickValue += 5; // Augmenter la valeur de clic
+              updateDisplay();
+          } else {
+              alert("Pas assez d'argent !");
+          }
+      });
+  
+      document.getElementById('boost3Button').addEventListener('click', () => {
+          if (money >= boosts[2]) {
+              money -= boosts[2];
+              clickValue += 10; // Augmenter la valeur de clic
+              updateDisplay();
+          } else {
+              alert("Pas assez d'argent !");
+          }
+      });
+  
+      function updateDisplay() {
+          // Assurez-vous d'avoir un élément avec l'ID "moneyDisplay" dans le DOM
+          document.getElementById("moneyDisplay").textContent = `Argent: ${money}`;
+      }
+  </script>
+  
+<!-- Sidebar avec menu déroulant -->
+
+</div>
+        </div>
         </div>
       </div>
+
+      <div id="chat">
+        <div class="container">
+          <div class="card">
+            <div class="chat-header">Chat</div>
+            <div class="chat-window">
+              <ul class="message-list" id="messages"></ul>
+            </div>
+            <div class="chat-input">
+              <form action="">
+                <input
+                  type="text"
+                  id="username"
+                  placeholder="Username"
+                  autocomplete="off"
+                />
+                <textarea
+                  id="msg"
+                  placeholder="Message"
+                  autocomplete="off"
+                  rows="1"
+                ></textarea>
+                <button class="send-button">
+                  <div class="svg-wrapper-1">
+                    <div class="svg-wrapper">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="70"
+                        height="25"
+                      >
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path
+                          fill="currentColor"
+                          d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <span>Send</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button id="toggleChatButton">Cacher le Chat</button>
     </div>
 
+    <script>
+let money = 0;
+let clickValue = 1;
+let totalBoost = 0; // Ajout d'une variable pour le boost total
+const buildings = [
+    { name: "pc", cost: 10, boost: 1, level: 0, income: 0 },
+    { name: "sauvegarde", cost: 50, boost: 2, level: 0, income: 0 },
+    { name: "tools", cost: 150, boost: 4, level: 0, income: 0 },
+    { name: "console", cost: 500, boost: 8, level: 0, income: 0 },
+    { name: "alimentation", cost: 1000, boost: 16, level: 0, income: 0 },
+    { name: "mp3", cost: 1250, boost: 32, level: 0, income: 0 },
+    { name: "internet", cost: 5000, boost: 64, level: 0, income: 0 },
+    { name: "la daronne à Ronan", cost: 10000, boost: 128, level: 0, income: 0 },
+    { name: "l'intelligence à Stéphane", cost: 15000, boost: 256, level: 0, income: 0 },
+    { name: "batterie", cost: 25000, boost: 512, level: 0, income: 0 },
+    { name: "souris", cost: 75000, boost: 1024, level: 0, income: 0 },
+    { name: "clavier", cost: 100000, boost: 2048, level: 0, income: 0 },
+    { name: "téléphone", cost: 500000, boost: 10000, level: 0, income: 0 },
+    { name: "TV", cost: 1000000, boost: 15000, level: 0, income: 0 },
+    { name: "imprimante", cost: 1500000, boost: 100000, level: 0, income: 0 },
+    { name: "casque", cost: 7500000, boost: 150000, level: 0, income: 0 },
+    { name: "micro", cost: 10000000, boost: 200000, level: 0, income: 0 },
+    { name: "stylo connecté", cost: 50000000, boost: 1500000, level: 0, income: 0 },
+    { name: "ordi portable", cost: 100000000, boost: 15000000, level: 0, income: 0 },
+    { name: "télescope pour observer la daronne à Ronan", cost: 150000000, boost: 5000000000, level: 0, income: 0 },
+];
+
+const moneyDisplay = document.getElementById("moneyDisplay");
+const clickButton = document.getElementById("clickButton");
+const chat = document.getElementById("chat");
+const toggleChatButton = document.getElementById("toggleChatButton");
+const game = document.getElementById("game");
+
+// Afficher le chat et cacher le jeu par défaut
+chat.style.display = "block";
+game.style.display = "none";
+
+// Gagner de l'argent au clic
+clickButton.addEventListener("click", () => {
+    money += clickValue + totalBoost; // Ajout du totalBoost ici
+    updateDisplay();
+});
+
+// Fonction pour acheter un bâtiment
+function buyBuilding(index) {
+    if (money >= buildings[index].cost && buildings[index].level < 100) {
+        money -= buildings[index].cost;
+        buildings[index].level++;
+        buildings[index].income += buildings[index].boost;
+        totalBoost += buildings[index].boost; // Ajout du boost au totalBoost
+        buildings[index].cost *= 5; // Coût multiplié pour le prochain achat
+        updateDisplay();
+    } else {
+        alert("Pas assez d'argent ou niveau maximum atteint !");
+    }
+}
+
+// Vérifier si le bâtiment précédent a été acheté
+function canBuyBuilding(index) {
+    if (index === 0) return true; // Le premier bâtiment peut toujours être acheté
+    return buildings[index - 1].level > 0; // Vérifie si le bâtiment précédent a été acheté
+}
+
+// Ajouter des écouteurs d'événements pour chaque bâtiment
+buildings.forEach((building, index) => {
+    const button = document.getElementById(`building${index + 1}Button`);
+    button.addEventListener("click", () => {
+        if (canBuyBuilding(index)) {
+            buyBuilding(index);
+        } else {
+            alert("Vous devez d'abord acheter le bâtiment précédent !");
+        }
+    });
+});
+
+// Mettre à jour l'affichage
+function updateDisplay() {
+    moneyDisplay.textContent = `Argent: ${money}`;
+    buildings.forEach((building, index) => {
+        const button = document.getElementById(`building${index + 1}Button`);
+        const locked = !canBuyBuilding(index) ? '🔒 ' : ''; // Ajoute un cadenas si le bâtiment est verrouillé
+        button.textContent = `${locked}Acheter ${building.name} (Coût: ${building.cost}, Boost: +${building.boost})`;
+    });
+}
+
+// Générer de l'argent automatiquement
+setInterval(() => {
+    money += buildings.reduce(
+        (total, building) => total + building.income,
+        0
+    );
+    updateDisplay();
+}, 1000);
+
+// Fonction pour basculer l'affichage du chat et du jeu
+toggleChatButton.addEventListener("click", () => {
+    if (chat.style.display === "block") {
+        chat.style.display = "none";
+        game.style.display = "block"; // Afficher le jeu
+        toggleChatButton.textContent = "Afficher le Chat";
+    } else {
+        chat.style.display = "block";
+        game.style.display = "none"; // Cacher le jeu
+        toggleChatButton.textContent = "Cacher le Chat";
+    }
+});
+  </script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="./index.js"></script>
-
     <script>
       $(function () {
         var socket = io();
@@ -272,26 +911,49 @@
 
         $("form").submit(function (e) {
           e.preventDefault();
+        });
 
+        $("#msg").keypress(function (e) {
+          if (e.which === 13) {
+            // Enter key
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+
+        $(".send-button").click(function () {
+          sendMessage();
+        });
+
+        function sendMessage() {
           if (!username) {
             username = $("#username").val();
           }
 
+          var currentTime = new Date();
+          var hours = currentTime.getHours();
+          var minutes = currentTime.getMinutes();
+          var timeString = `${hours.toString().padStart(2, "0")}:${minutes
+            .toString()
+            .padStart(2, "0")}`;
+
           socket.emit("chat message", {
             username: username,
             message: $("#msg").val(),
+            time: timeString,
           });
 
           $("#msg").val("");
-          return false;
-        });
+        }
 
         socket.on("chat message", function (data) {
           var message = $("<li class='message'>");
+          message.append($("<span class='time'>").text(`${data.time}`));
+          message.append($("<br>")); // Add a line break
           message.append(
-            $("<span class='username'>").text(data.username + ": ")
+            $("<span class='username'>").html(`<i>${data.username}:</i>`)
           );
-          message.append($("<span class='message-text'>").text(data.message));
+          message.append($("<span class='message-text'>").html(data.message)); // Use html() instead of text() to preserve line breaks
           $("#messages").append(message);
 
           // Make the chat window scroll to the bottom
